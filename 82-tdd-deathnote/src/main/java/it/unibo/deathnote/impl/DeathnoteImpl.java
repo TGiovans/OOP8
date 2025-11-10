@@ -1,9 +1,16 @@
 package it.unibo.deathnote.impl;
 
+import java.util.List;
+import java.util.Map;
 import it.unibo.deathnote.api.DeathNote;
 
 public class DeathnoteImpl implements DeathNote {
 
+    /*ATK PLAN DN1:
+    create subclass human with name, death cause and details.
+    write in theuir instances when updating.
+    save time of death for reference.
+    */
     @Override
     public String getRule(int ruleNumber) {
         throw new IndexOutOfBoundsException("ERROR: get rekt");
