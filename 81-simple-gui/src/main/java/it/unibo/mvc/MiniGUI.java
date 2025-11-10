@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -40,12 +41,6 @@ public class MiniGUI {
         /*
          * Handlers
          */
-        write.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                System.out.println(randomGenerator.nextInt());
-            }
-        });
         final JPanel myPanel = new JPanel();
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.X_AXIS));
         canvas.getLayout().removeLayoutComponent(write);
@@ -53,6 +48,13 @@ public class MiniGUI {
         myPanel.add(write);
         final TextField text = new TextField("Result");
         canvas.add(text, BorderLayout.NORTH,0);
+         write.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                text.setText("" + randomGenerator.nextInt());
+            }
+        });
+        
     }
 
     private void display() {
