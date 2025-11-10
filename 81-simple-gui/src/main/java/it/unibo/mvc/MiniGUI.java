@@ -1,5 +1,6 @@
 package it.unibo.mvc;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,6 +45,11 @@ public class MiniGUI {
                 System.out.println(randomGenerator.nextInt());
             }
         });
+        final JPanel myPanel = new JPanel();
+        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.X_AXIS));
+        canvas.getLayout().removeLayoutComponent(write);
+        canvas.add(myPanel, BorderLayout.CENTER);
+        myPanel.add(write);
     }
 
     private void display() {
