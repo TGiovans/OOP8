@@ -4,10 +4,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +34,6 @@ public class MiniGUI {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Print a random number on standard output");
-        canvas.add(write, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /*
@@ -43,18 +41,18 @@ public class MiniGUI {
          */
         final JPanel myPanel = new JPanel();
         myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.X_AXIS));
-        canvas.getLayout().removeLayoutComponent(write);
         canvas.add(myPanel, BorderLayout.CENTER);
         myPanel.add(write);
-        final TextField text = new TextField("Result");
-        canvas.add(text, BorderLayout.NORTH,0);
-         write.addActionListener(new ActionListener() {
+        final JTextArea text = new JTextArea("Result");
+        canvas.add(text, BorderLayout.NORTH);
+        write.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                text.setText("" + randomGenerator.nextInt());
+                final int out = randomGenerator.nextInt();
+                text.setText("Result is " + out);
+                System.out.println(out); // NOPMD required by exercise
             }
-        });
-        
+        }); 
     }
 
     private void display() {
@@ -96,5 +94,4 @@ public class MiniGUI {
     public static void main(final String... args) {
         new MiniGUI().display();
     }
-
 }
