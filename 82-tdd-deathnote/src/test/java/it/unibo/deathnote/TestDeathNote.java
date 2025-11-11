@@ -11,29 +11,30 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class TestDeathNote {
 
-    DeathNote note;
+    private DeathNote note;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         note = new DeathnoteImpl();
         assertNotNull(note);
     }
 
     @Test
-    void testNegRules(){
-        try{
+    void testNegRules() {
+        try {
             note.getRule(0);
             fail();
-        }catch(IndexOutOfBoundsException e){
+        } catch(final IllegalArgumentException e) {
             assertNotNull(e);
             assertNotNull(e.getMessage());
             assertNotEquals(e.getMessage(), "");
-            try{
+            try {
                 note.getRule(-1);
                 fail();
-            }catch(IllegalArgumentException f){
+            } catch(final IllegalArgumentException f) {
                 assertNotNull(f);
                 assertNotNull(f.getMessage());
                 assertNotEquals(f.getMessage(), "");
@@ -42,15 +43,22 @@ class TestDeathNote {
     }
 
     @Test
-    void testRulesNotNull(){
-        for(String rule : DeathNote.RULES){
-            assertNotNull(rule);
-            assertNotEquals(rule, "");
+    void testRulesNotNull() {
+        int i = 0;
+        while(true) {
+            try {
+                String rule = note.getRule(i);
+                assertNotNull(rule);
+            } catch(final IllegalArgumentException e) {
+                assertNotNull(e);
+                assertNotNull(e.getMessage());
+                assertNotEquals(e.getMessage(), "");
+            } 
         }
     }
 
     @Test
-    void testWritingUser(){
+    void testWritingUser() {
         assertFalse(note.isNameWritten("This Person"));
         note.writeName("This Person");
         assertTrue(note.isNameWritten("This Person"));
@@ -58,11 +66,11 @@ class TestDeathNote {
     }
 
     @Test
-    void testCauseDeath() throws InterruptedException{
-        try{
+    void testCauseDeath() throws InterruptedException {
+        try {
             note.writeDeathCause("Karting accident");
             fail();
-        }catch(IllegalArgumentException e){
+        } catch(final IllegalStateException e) {
             assertNotNull(e);
             assertNotNull(e.getMessage());
             assertNotEquals(e.getMessage(), "");
@@ -78,11 +86,11 @@ class TestDeathNote {
     }
 
     @Test
-    void testDeathDetails() throws InterruptedException{
-        try{
+    void testDeathDetails() throws InterruptedException {
+        try {
             note.writeDetails("The kart exploded.");
             fail();
-        }catch(IllegalArgumentException e){
+        } catch(final IllegalStateException e) {
             assertNotNull(e);
             assertNotNull(e.getMessage());
             assertNotEquals(e.getMessage(), "");
