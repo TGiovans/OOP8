@@ -2,14 +2,9 @@ package it.unibo.deathnote;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import it.unibo.deathnote.api.DeathNote;
 import it.unibo.deathnote.impl.DeathnoteImpl;
-
 import static org.junit.jupiter.api.Assertions.fail;
-
-import java.awt.image.DirectColorModel;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -63,7 +58,7 @@ class TestDeathNote {
     }
 
     @Test
-    void testCauseDeath(){
+    void testCauseDeath() throws InterruptedException{
         try{
             note.writeDeathCause("Karting accident");
             fail();
@@ -83,7 +78,7 @@ class TestDeathNote {
     }
 
     @Test
-    void testDeathDetails(){
+    void testDeathDetails() throws InterruptedException{
         try{
             note.writeDetails("The kart exploded.");
             fail();
