@@ -1,138 +1,135 @@
 package it.unibo.deathnote.impl;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Locale;
 import java.util.Map;
 
 import it.unibo.deathnote.api.DeathNote;
 
-public class DeathnoteImpl implements DeathNote {
+/**
+ * Implementation of "DeathNote" interface.
+ */
+public final class DeathnoteImpl implements DeathNote {
 
-    private final class DeadHuman{
-
-        private final long timeOfDeath;
-        private String deathCause;
-        private String deathDetails;
-        private final static int CAUSE_EDIT_TIME = 40;
-        private final static int DETAILS_EDIT_TIME = 6040;
-
-        protected DeadHuman(long toD, String death, String more){
-            this.timeOfDeath=toD;
-            this.deathCause=death.toLowerCase(Locale.getDefault());
-            this.deathDetails=more;
-        }
-
-        protected DeadHuman(long toD){
-            this(toD, "Heart attack", null);
-        }
-
-        private final String getDeath(){
-            return this.deathCause;
-        }
-
-        private final boolean updateCause(String cause){
-            if(this.canEditDeath()){
-                this.deathCause=cause.toLowerCase(Locale.getDefault());
-                return true;
-            }else{
-                return false;
-            }
-        }
-
-        private final String getDet(){
-            return this.deathDetails;
-        }
-
-        private final boolean updateDet(String details){
-            if(this.canEditDetails()){
-                this.deathDetails=details;
-                return true;
-            }else{
-                return false;
-            }
-        }
-
-        public final boolean canEditDeath(){
-            return (System.currentTimeMillis()-timeOfDeath) < CAUSE_EDIT_TIME;
-        }
-
-        public final boolean canEditDetails(){
-            return (System.currentTimeMillis()-timeOfDeath) < DETAILS_EDIT_TIME;
-        }
-    }
-    /*ATK PLAN DN1:
-    create subclass human with name, death cause and details.
-    write in their instances when updating.
-    save time of death for reference.
-    */
-    private Map<String,DeadHuman> noteLog;
+    private final Map<String, DeadHuman> noteLog;
     private DeadHuman latest;
 
-    public DeathnoteImpl(){
-        this.noteLog = new HashMap<>();
+    /**
+     * Creates a new instance of the class.
+     */
+    public DeathnoteImpl() {
+        this.noteLog = new TreeMap<>();
         latest = null;
     }
 
     @Override
-    public String getRule(int ruleNumber) {
-        try{
-            return RULES.get(ruleNumber-1);
-        }catch(IndexOutOfBoundsException e){
-            throw new IllegalArgumentException("No such rule exists.");
+    public String getRule(final int ruleNumber) {
+        try {
+            return RULES.get(ruleNumber - 1);
+        } catch (final IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("No such rule exists.", e);
         }
     }
 
     @Override
-    public void writeName(String name) {
-        if(name==null){
-            throw new NullPointerException("No name written.");
-        }else{
+    public void writeName(final String name) {
             latest = new DeadHuman(System.currentTimeMillis());
             noteLog.put(name, latest);
-        }
     }
 
     @Override
-    public boolean writeDeathCause(String cause) {
-        if(cause==null || noteLog.isEmpty()){
+    public boolean writeDeathCause(final String cause) {
+        if (cause != null && !noteLog.isEmpty()) {
             return latest.updateCause(cause);
-        }else{
+        } else {
             throw new IllegalStateException("Unable to write cause. Make sure you wrote a name or provided a cause.");
         }
     }
 
     @Override
-    public boolean writeDetails(String details) {
-        if(details==null || noteLog.isEmpty()){
+    public boolean writeDetails(final String details) {
+        if (details != null && !noteLog.isEmpty()) {
             return latest.updateDet(details);
-        }else{
+        } else {
             throw new IllegalStateException("Unable to write details. Make sure you wrote a name or provided details.");
         }
     }
 
     @Override
-    public String getDeathCause(String name) {
-        DeadHuman victim = noteLog.get(name);
-        if(isNameWritten(name)){
+    public String getDeathCause(final String name) {
+        final DeadHuman victim = noteLog.get(name);
+        if (isNameWritten(name)) {
             return victim.getDeath();
-        }else{
+        } else {
             throw new IllegalArgumentException("Name not written.");
         }
     }
 
     @Override
-    public String getDeathDetails(String name) {
-        DeadHuman victim = noteLog.get(name);
-        if(isNameWritten(name)){
+    public String getDeathDetails(final String name) {
+        final DeadHuman victim = noteLog.get(name);
+        if (isNameWritten(name)) {
             return victim.getDet();
-        }else{
+        } else {
             throw new IllegalArgumentException("Name not written.");
         }
     }
 
     @Override
-    public boolean isNameWritten(String name) {
-        return (noteLog.get(name)!=null);
+    public boolean isNameWritten(final String name) {
+        return noteLog.get(name) != null;
     }
-    
+
+    private final class DeadHuman {
+
+        private static final int CAUSE_EDIT_TIME = 40;
+        private static final int DETAILS_EDIT_TIME = 6040;
+        private final long timeOfDeath;
+        private String deathCause;
+        private String deathDetails;
+
+        protected DeadHuman(final long toD, final String death, final String more) {
+            this.timeOfDeath = toD;
+            this.deathCause = death.toLowerCase(Locale.getDefault());
+            this.deathDetails = more;
+        }
+
+        protected DeadHuman(final long toD) {
+            this(toD, "Heart attack", "");
+        }
+
+        private String getDeath() {
+            return this.deathCause;
+        }
+
+        private boolean updateCause(final String cause) {
+            if (this.canEditDeath()) {
+                this.deathCause = cause.toLowerCase(Locale.getDefault());
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private String getDet() {
+            return this.deathDetails;
+        }
+
+        private boolean updateDet(final String details) {
+            if (this.canEditDetails()) {
+                this.deathDetails = details;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public boolean canEditDeath() {
+            return (System.currentTimeMillis() - timeOfDeath) < CAUSE_EDIT_TIME;
+        }
+
+        public boolean canEditDetails() {
+            return (System.currentTimeMillis() - timeOfDeath) < DETAILS_EDIT_TIME;
+        }
+    }
 }
