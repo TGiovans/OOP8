@@ -5,16 +5,24 @@ import org.junit.jupiter.api.Test;
 import it.unibo.deathnote.api.DeathNote;
 import it.unibo.deathnote.impl.DeathnoteImpl;
 import static org.junit.jupiter.api.Assertions.fail;
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestDeathNote {
 
-    private DeathNote note;
+    private static final String HUMAN1 = "this person";
+    private static final String HUMAN2 = "another person";
+    private static final String CAUSE1 = "Karting accident";
+    private static final String CAUSEDEF = "Heart attack";
+    private static final String CAUSE2 = "Overdose";
+    private static final long SLEEP_SHORT = 100L;
+    private static final long SLEEP_LONG = 6000L + SLEEP_SHORT;
+    private DeathNote note; 
 
     @BeforeEach
     void setUp() {
@@ -27,17 +35,17 @@ class TestDeathNote {
         try {
             note.getRule(0);
             fail();
-        } catch(final IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertNotNull(e);
             assertNotNull(e.getMessage());
             assertNotEquals(e.getMessage(), "");
             try {
                 note.getRule(-1);
                 fail();
-            } catch(final IllegalArgumentException f) {
-                assertNotNull(f);
-                assertNotNull(f.getMessage());
-                assertNotEquals(f.getMessage(), "");
+            } catch (final IllegalArgumentException err) {
+                assertNotNull(err);
+                assertNotNull(err.getMessage());
+                assertNotEquals(err.getMessage(), "");
             }
         }
     }
@@ -45,44 +53,46 @@ class TestDeathNote {
     @Test
     void testRulesNotNull() {
         int i = 0;
-        while(true) {
+        while (true) {
             try {
-                String rule = note.getRule(i);
+                final String rule = note.getRule(i);
                 assertNotNull(rule);
-            } catch(final IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 assertNotNull(e);
                 assertNotNull(e.getMessage());
                 assertNotEquals(e.getMessage(), "");
+                break;
             } 
+            i++;
         }
     }
 
     @Test
     void testWritingUser() {
-        assertFalse(note.isNameWritten("This Person"));
-        note.writeName("This Person");
-        assertTrue(note.isNameWritten("This Person"));
-        assertFalse(note.isNameWritten("Another Person") || note.isNameWritten(""));
+        assertFalse(note.isNameWritten(HUMAN1));
+        note.writeName(HUMAN1);
+        assertTrue(note.isNameWritten(HUMAN1));
+        assertFalse(note.isNameWritten(HUMAN2) || note.isNameWritten(""));
     }
 
     @Test
     void testCauseDeath() throws InterruptedException {
         try {
-            note.writeDeathCause("Karting accident");
+            note.writeDeathCause(CAUSE1);
             fail();
-        } catch(final IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             assertNotNull(e);
             assertNotNull(e.getMessage());
             assertNotEquals(e.getMessage(), "");
         }
-        note.writeName("Another Person");
-        assertEquals("Heart attack", note.getDeathCause("Another Person"));
-        note.writeName("Pilot Person");
-        assertTrue(note.writeDeathCause("Pilot Person"));
-        assertEquals("Karting accident", note.getDeathCause("Pilot Person"));
-        Thread.sleep(100L);
-        assertFalse(note.writeDeathCause("Overdose"));
-        assertEquals(note.getDeathCause("Pilot Person"), "Karting accident");
+        note.writeName(HUMAN2);
+        assertEquals(note.getDeathCause(HUMAN2), CAUSEDEF.toLowerCase(Locale.getDefault()));
+        note.writeName(HUMAN1);
+        assertTrue(note.writeDeathCause(CAUSE1));
+        assertEquals(CAUSE1.toLowerCase(Locale.getDefault()), note.getDeathCause(HUMAN1));
+        Thread.sleep(SLEEP_SHORT);
+        assertFalse(note.writeDeathCause(CAUSE2));
+        assertEquals(note.getDeathCause(HUMAN1), CAUSE1.toLowerCase(Locale.getDefault()));
     }
 
     @Test
@@ -90,18 +100,18 @@ class TestDeathNote {
         try {
             note.writeDetails("The kart exploded.");
             fail();
-        } catch(final IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             assertNotNull(e);
             assertNotNull(e.getMessage());
             assertNotEquals(e.getMessage(), "");
         }
-        note.writeName("One More Person");
-        assertNull(note.getDeathDetails("One More Person"));
+        note.writeName(HUMAN2);
+        assertEquals(note.getDeathDetails(HUMAN2), "");
         assertTrue(note.writeDetails("ran for too long"));
-        assertEquals("ran for too long", note.getDeathDetails("One More Person"));
+        assertEquals("ran for too long", note.getDeathDetails(HUMAN2));
         note.writeName("New Person");
-        Thread.sleep(6100L);
-        assertFalse(note.writeDetails("Overdose"));
-        assertEquals(note.getDeathDetails("New Person"), "Overdose");
+        Thread.sleep(SLEEP_LONG);
+        assertFalse(note.writeDetails(CAUSE2));
+        assertNotEquals(note.getDeathDetails(HUMAN2), CAUSE2);
     }
 }
