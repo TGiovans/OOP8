@@ -3,6 +3,8 @@ package it.unibo.mvc.controller;
 import it.unibo.mvc.api.DrawNumber;
 import it.unibo.mvc.api.DrawNumberController;
 import it.unibo.mvc.api.DrawNumberView;
+import it.unibo.mvc.api.DrawResult;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -39,8 +41,9 @@ public final class DrawNumberControllerImpl implements DrawNumberController {
 
     @Override
     public void newAttempt(final int n) {
-        for (final DrawNumberView view : views) {
-            Objects.requireNonNull(view, "There is no view attached!").result(model.attempt(n));
+        final DrawResult res = model.attempt(n);
+        for (final DrawNumberView view : views) { 
+            Objects.requireNonNull(view, "There is no view attached!").result(res);
         }
     }
 
