@@ -92,7 +92,7 @@ public final class DrawNumberSwingView implements DrawNumberView {
 
     @Override
     public void setController(final DrawNumberController observer) {
-        this.controller = observer; //NOPMD included in exercise basis, not requested to modify 
+        this.controller = observer;
     }
 
     @Override
