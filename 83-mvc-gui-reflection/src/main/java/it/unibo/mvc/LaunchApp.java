@@ -12,7 +12,7 @@ import it.unibo.mvc.model.DrawNumberImpl;
 public final class LaunchApp {
 
     private static final int VIEWS_PER_TYPE = 3;
-    
+
     private LaunchApp() { }
 
     /**
@@ -26,12 +26,18 @@ public final class LaunchApp {
      * @throws IllegalAccessException in case of reflection issues
      * @throws IllegalArgumentException in case of reflection issues
      */
-    public static void main(final String... args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+    public static void main(final String... args) 
+    throws ClassNotFoundException,
+    InstantiationException,
+    IllegalAccessException,
+    IllegalArgumentException,
+    InvocationTargetException,
+    NoSuchMethodException {
         final var model = new DrawNumberImpl();
         final DrawNumberController app = new DrawNumberControllerImpl(model);
         final Class<?> cl1 = Class.forName("it.unibo.mvc.view.DrawNumberSwingView");
         final Class<?> cl2 = Class.forName("it.unibo.mvc.view.DrawNumberStandardOutputView");
-        for(int i = 0; i<VIEWS_PER_TYPE; i++) {
+        for (int i = 0; i < VIEWS_PER_TYPE; i++) {
             app.addView((DrawNumberView) cl1.getConstructor().newInstance());
             app.addView((DrawNumberView) cl2.getConstructor().newInstance());
         }
